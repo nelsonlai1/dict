@@ -107,6 +107,14 @@ int main(int argc, char **argv)
         return stat;
     }
 
+    if (argc == 3 && strcmp(argv[1], "--bloom_bench") == 0) {
+        int stat = bloom_bench_test(root, BENCH_TEST_FILE, LMAX, bloom);
+        tst_free(root);
+        free(pool);
+        bloom_free(bloom);
+        return stat;
+    }
+
     FILE *output;
     output = fopen("ref.txt", "a");
     if (output != NULL) {
@@ -125,7 +133,8 @@ int main(int argc, char **argv)
             " q  quit, freeing all data\n\n"
             "choice: ");
 
-        if (argc > 2 && strcmp(argv[1], "--bench") == 0)  // a for auto
+        if (argc > 2 && (strcmp(argv[1], "--bench") == 0 ||
+                         strcmp(argv[1], "--bloom_bench") == 0))  // a for auto
             strcpy(word, argv[3]);
         else
             fgets(word, sizeof word, stdin);
@@ -133,7 +142,8 @@ int main(int argc, char **argv)
         switch (*word) {
         case 'a':
             printf("enter word to add: ");
-            if (argc > 2 && strcmp(argv[1], "--bench") == 0)
+            if (argc > 2 && (strcmp(argv[1], "--bench") == 0 ||
+                             strcmp(argv[1], "--bloom_bench") == 0))
                 strcpy(Top, argv[4]);
             else if (!fgets(Top, sizeof word, stdin)) {
                 fprintf(stderr, "error: insufficient input.\n");
@@ -156,7 +166,9 @@ int main(int argc, char **argv)
                        (char *) res, t2 - t1, idx);
             }
 
-            if (argc > 2 && strcmp(argv[1], "--bench") == 0)  // a for auto
+            if (argc > 2 &&
+                (strcmp(argv[1], "--bench") == 0 ||
+                 strcmp(argv[1], "--bloom_bench") == 0))  // a for auto
                 goto quit;
             break;
         case 'f':
@@ -190,7 +202,8 @@ int main(int argc, char **argv)
         case 's':
             printf("find words matching prefix (at least 1 char): ");
 
-            if (argc > 2 && strcmp(argv[1], "--bench") == 0)
+            if (argc > 2 && (strcmp(argv[1], "--bench") == 0 ||
+                             strcmp(argv[1], "--bloom_bench") == 0))
                 strcpy(word, argv[4]);
             else if (!fgets(word, sizeof word, stdin)) {
                 fprintf(stderr, "error: insufficient input.\n");
@@ -207,7 +220,9 @@ int main(int argc, char **argv)
             } else
                 printf("  %s - not found\n", word);
 
-            if (argc > 2 && strcmp(argv[1], "--bench") == 0)  // a for auto
+            if (argc > 2 &&
+                (strcmp(argv[1], "--bench") == 0 ||
+                 strcmp(argv[1], "--bloom_bench") == 0))  // a for auto
                 goto quit;
             break;
         case 'd':
